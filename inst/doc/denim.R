@@ -19,7 +19,6 @@ DiagrammeR::grViz("digraph {
   width = 300, height = "100%")
 
 ## ----echo=FALSE---------------------------------------------------------------
-
 rates <- c(0.5, 1, 1.5)
 x <- seq(0, 5, 0.001)
 y <- dexp(x = x, rate = rates[1])
@@ -215,4 +214,29 @@ mod <- sim(transitions = transitions,
            simulationDuration = simulationDuration, 
            timeStep = timeStep)
 plot(mod)
+
+## -----------------------------------------------------------------------------
+transitions <- list(
+  "O -> S" = 100,
+  "S -> I, R" = multinomial(0.5, 0.5),
+  "S -> I" = transprob(1),
+  "S -> R" = transprob(1)
+)
+
+initialValues <- c(
+  O = 1000,
+  S = 500, 
+  I = 0, 
+  R = 0
+)
+
+simulationDuration <- 10
+timeStep <- 0.01
+
+mod <- sim(transitions = transitions, 
+           initialValues = initialValues, 
+           parameters = parameters, 
+           simulationDuration = simulationDuration, 
+           timeStep = timeStep)
+mod
 

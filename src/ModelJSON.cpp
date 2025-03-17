@@ -201,6 +201,9 @@ ModelJSON::ModelJSON(nlohmann::ordered_json &initialValues, nlohmann::ordered_js
             comp->addOutDistribution(transitionProb);
             comp->addOutWeight(1);
         }
+
+        // TODO: normalize outweight here
+        // probably make a function to normalize outWeight for Compartment class and call it here
         comp->setLengthSubCompartment();
         comp->setOutValues();
     }
