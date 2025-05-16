@@ -36,7 +36,7 @@ legend("right", legend = c(0.5, 1.0, 1.5),
 
 ## ----echo=FALSE---------------------------------------------------------------
 x <- seq(0, 20, 0.001)
-y <- dgamma(x = x, shape = 3, scale = 2)
+y <- dgamma(x = x, shape = 3, rate = 1/2)
 
 plot(x, y, type = "l", col = col_codes[1], lty = 1, lwd = 3,
      xlab = "Length of stay (days)", ylab = "", yaxt = 'n')
@@ -48,7 +48,7 @@ DiagrammeR::grViz("digraph {
   node [shape = rectangle]
   
   S -> I [label = '&#946;SI/N']
-  I -> R [label = 'd_gamma(3, 2)']
+  I -> R [label = 'd_gamma(1/2, 3)']
   }",
   width = 400, height = "100%")
 
@@ -59,14 +59,14 @@ DiagrammeR::grViz("digraph {
   node [shape = rectangle]
   
   S -> I [label = '&#946;SI/N']
-  I -> R [label = 'd_gamma(3, 2)']
+  I -> R [label = 'd_gamma(1/2, 3)']
   }",
   width = 400, height = "100%")
 
 ## -----------------------------------------------------------------------------
 transitions <- list(
   "S -> I" = "beta * S * I / N",
-  "I -> R" = d_gamma(3, 2)
+  "I -> R" = d_gamma(rate = 1/2, 3)
 )
 
 ## -----------------------------------------------------------------------------
@@ -122,6 +122,12 @@ DiagrammeR::grViz("digraph {
   I3 -> I4 [label = '(1-&#947;@_{3})I@_{3}']
   }", height = "100%", width = "100%")
 
+## ----eval=FALSE---------------------------------------------------------------
+# transitions <- list(
+#   "S -> I" = "beta * S * I / N",
+#   "I -> R" = d_gamma(rate = 1/2, 3, dist_init=TRUE)
+# )
+
 ## ----echo=FALSE---------------------------------------------------------------
 DiagrammeR::grViz("digraph {
   graph [layout = dot, rankdir = LR]
@@ -130,7 +136,7 @@ DiagrammeR::grViz("digraph {
   
   S -> I [label = '&#946;SI/N']
   S -> V [label = '5']
-  I -> R [label = '0.9 -> d_gamma(3, 2)']
+  I -> R [label = '0.9 -> d_gamma(1/3, 2)']
   I -> D [label = '0.1 -> d_lognormal(2, 0.5)']
   }",
   width = 500, height = "100%")
@@ -138,8 +144,8 @@ DiagrammeR::grViz("digraph {
 ## ----fig.width = 5------------------------------------------------------------
 transitions <- list(
   "S -> I" = "beta * S * I / N",
-  "S -> V" = 7,
-  "0.9 * I -> R" = d_gamma(3, 2),
+  "S -> V" = 5,
+  "0.9 * I -> R" = d_gamma(1/3, 2),
   "0.1 * I -> D" = d_lognormal(2, 0.5)
 )
 
@@ -164,6 +170,8 @@ mod <- sim(transitions = transitions,
            parameters = parameters, 
            simulationDuration = simulationDuration, 
            timeStep = timeStep)
+
+head(mod)
 plot(mod)
 
 ## ----echo=FALSE---------------------------------------------------------------
@@ -175,7 +183,7 @@ DiagrammeR::grViz("digraph {
   S -> I [label = '&#946;S(I + IV)/N']
   S -> V [label = '2']
   I -> D [label = '0.1 -> d_lognormal(2, 0.5)']
-  I -> R [label = '0.9 -> d_gamma(3, 2)']
+  I -> R [label = '0.9 -> d_gamma(1/3, 2)']
   V -> IV [label = '0.1 * &#946;V(I + IV)/N']
   IV -> R [label = 'd_exponential(2)']
   }",
@@ -186,7 +194,7 @@ transitions <- list(
   "S -> I" = "beta * S * (I + IV) / N",
   "S -> V" = 2,
   "0.1 * I -> D" = d_lognormal(2, 0.5),
-  "0.9 * I -> R" = d_gamma(3, 2),
+  "0.9 * I -> R" = d_gamma(rate = 1/3, shape = 2),
   "V -> IV" = "0.1 * beta * V * (I + IV) / N",
   "IV -> R" = d_exponential(2)
 )
@@ -214,29 +222,5 @@ mod <- sim(transitions = transitions,
            simulationDuration = simulationDuration, 
            timeStep = timeStep)
 plot(mod)
-
-## -----------------------------------------------------------------------------
-transitions <- list(
-  "O -> S" = 100,
-  "S -> I, R" = multinomial(0.5, 0.5),
-  "S -> I" = transprob(1),
-  "S -> R" = transprob(1)
-)
-
-initialValues <- c(
-  O = 1000,
-  S = 500, 
-  I = 0, 
-  R = 0
-)
-
-simulationDuration <- 10
-timeStep <- 0.01
-
-mod <- sim(transitions = transitions, 
-           initialValues = initialValues, 
-           parameters = parameters, 
-           simulationDuration = simulationDuration, 
-           timeStep = timeStep)
 mod
 

@@ -352,28 +352,26 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># --- Model definition in deSolve</span></span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>transition_func <span class="ot">&lt;-</span> <span class="cf">function</span>(t, state, param){</span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="fu">with</span>(<span class="fu">as.list</span>( <span class="fu">c</span>(state, param) ), {</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>      gamma_rate <span class="ot">=</span> <span class="dv">1</span><span class="sc">/</span>scale</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>      </span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>      dS <span class="ot">=</span> <span class="sc">-</span>beta<span class="sc">*</span>S<span class="sc">*</span>I<span class="sc">/</span>N</span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>      dI1 <span class="ot">=</span> beta<span class="sc">*</span>S<span class="sc">*</span>I<span class="sc">/</span>N <span class="sc">-</span> gamma_rate<span class="sc">*</span>I1</span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>      dI2 <span class="ot">=</span> gamma_rate<span class="sc">*</span>I1 <span class="sc">-</span> gamma_rate<span class="sc">*</span>I2</span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>      dI <span class="ot">=</span>  dI1 <span class="sc">+</span> dI2</span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>      dR <span class="ot">=</span> gamma_rate<span class="sc">*</span>I2</span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>      <span class="fu">list</span>(<span class="fu">c</span>(dS, dI, dI1, dI2, dR))</span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  })</span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>}</span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a></span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co"># ---- Model configuration </span></span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>parameters <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">beta =</span> <span class="fl">0.3</span>, <span class="at">scale =</span> <span class="dv">3</span>, <span class="at">N =</span> <span class="dv">1000</span>) </span>
-<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>initialValues <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">S =</span> <span class="dv">999</span>, <span class="at">I =</span> <span class="dv">1</span>, <span class="at">I1 =</span> <span class="dv">1</span>, <span class="at">I2=</span><span class="dv">0</span>, <span class="at">R=</span><span class="dv">0</span>)</span>
-<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a></span>
-<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co"># ---- Run simulation</span></span>
-<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>times <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>) <span class="co"># simulation duration</span></span>
-<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>ode_mod <span class="ot">&lt;-</span> <span class="fu">ode</span>(<span class="at">y =</span> initialValues, <span class="at">times =</span> times, <span class="at">parms =</span> parameters, <span class="at">func =</span> transition_func)</span>
-<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a></span>
-<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co"># --- show output</span></span>
-<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a>ode_mod <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(ode_mod)</span>
-<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="fu">head</span>(ode_mod[<span class="sc">-</span><span class="dv">1</span>, <span class="fu">c</span>(<span class="st">&quot;time&quot;</span>, <span class="st">&quot;S&quot;</span>, <span class="st">&quot;I&quot;</span>, <span class="st">&quot;R&quot;</span>)])</span></code></pre></div>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>      dS <span class="ot">=</span> <span class="sc">-</span>beta<span class="sc">*</span>S<span class="sc">*</span>I<span class="sc">/</span>N</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>      dI1 <span class="ot">=</span> beta<span class="sc">*</span>S<span class="sc">*</span>I<span class="sc">/</span>N <span class="sc">-</span> rate<span class="sc">*</span>I1</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>      dI2 <span class="ot">=</span> rate<span class="sc">*</span>I1 <span class="sc">-</span> rate<span class="sc">*</span>I2</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>      dI <span class="ot">=</span>  dI1 <span class="sc">+</span> dI2</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>      dR <span class="ot">=</span> rate<span class="sc">*</span>I2</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>      <span class="fu">list</span>(<span class="fu">c</span>(dS, dI, dI1, dI2, dR))</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  })</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>}</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co"># ---- Model configuration </span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>parameters <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">beta =</span> <span class="fl">0.3</span>, <span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="at">N =</span> <span class="dv">1000</span>) </span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>initialValues <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">S =</span> <span class="dv">999</span>, <span class="at">I =</span> <span class="dv">1</span>, <span class="at">I1 =</span> <span class="dv">1</span>, <span class="at">I2=</span><span class="dv">0</span>, <span class="at">R=</span><span class="dv">0</span>)</span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co"># ---- Run simulation</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>times <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>) <span class="co"># simulation duration</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>ode_mod <span class="ot">&lt;-</span> <span class="fu">ode</span>(<span class="at">y =</span> initialValues, <span class="at">times =</span> times, <span class="at">parms =</span> parameters, <span class="at">func =</span> transition_func)</span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co"># --- show output</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>ode_mod <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(ode_mod)</span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="fu">head</span>(ode_mod[<span class="sc">-</span><span class="dv">1</span>, <span class="fu">c</span>(<span class="st">&quot;time&quot;</span>, <span class="st">&quot;S&quot;</span>, <span class="st">&quot;I&quot;</span>, <span class="st">&quot;R&quot;</span>)])</span></code></pre></div>
 <pre><code>##   time        S        I          R
 ## 2    1 998.6561 1.294182 0.04969647
 ## 3    2 998.2239 1.594547 0.18152864
@@ -386,8 +384,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h3>Model definition</h3>
 <p>Unlike <code>deSolve</code> where transitions between compartments
 are defined by a system of ODEs, transitions in <code>denim</code> must
-be defined by (i) a distribution of dwell-time, (ii) a mathematical
-expression, (iii) a fixed number or proportion.</p>
+be defined by (i) a distribution of dwell-time (either parametric or
+non-parametric) or (ii) a mathematical expression.</p>
 <p>User must first identify the transitions that best describe the ones
 in their <code>deSolve</code> model.</p>
 <details>
@@ -395,21 +393,20 @@ in their <code>deSolve</code> model.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># --- Model definition in deSolve</span></span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>transition_func <span class="ot">&lt;-</span> <span class="cf">function</span>(t, state, param){</span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="fu">with</span>(<span class="fu">as.list</span>( <span class="fu">c</span>(state, param) ), {</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>      gamma_rate <span class="ot">=</span> <span class="dv">1</span><span class="sc">/</span>scale</span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>      </span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>      <span class="co"># For S -&gt; I transition, since it involves parameters (beta, N), </span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>      <span class="co"># the best transition to describe this is using a mathematical formula</span></span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>      dS <span class="ot">=</span> <span class="sc">-</span>beta<span class="sc">*</span>S<span class="sc">*</span>I<span class="sc">/</span>N</span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>      </span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>      <span class="co"># For I -&gt; R transition, linear chain trick is applied --&gt; implies Erlang distributed dwell time</span></span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>      <span class="co"># Hence, we can use d_gamma from denim</span></span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>      dI1 <span class="ot">=</span> beta<span class="sc">*</span>S<span class="sc">*</span>I<span class="sc">/</span>N <span class="sc">-</span> gamma_rate<span class="sc">*</span>I1</span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>      dI2 <span class="ot">=</span> gamma_rate<span class="sc">*</span>I1 <span class="sc">-</span> gamma_rate<span class="sc">*</span>I2</span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>      dI <span class="ot">=</span>  dI1 <span class="sc">+</span> dI2</span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>      dR <span class="ot">=</span> gamma_rate<span class="sc">*</span>I2</span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>      <span class="fu">list</span>(<span class="fu">c</span>(dS, dI, dI1, dI2, dR))</span>
-<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>  })</span>
-<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>      </span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>      <span class="co"># For S -&gt; I transition, since it involves parameters (beta, N), </span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>      <span class="co"># the best transition to describe this is using a mathematical formula</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>      dS <span class="ot">=</span> <span class="sc">-</span>beta<span class="sc">*</span>S<span class="sc">*</span>I<span class="sc">/</span>N</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>      </span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>      <span class="co"># For I -&gt; R transition, linear chain trick is applied --&gt; implies Erlang distributed dwell time</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>      <span class="co"># Hence, we can use d_gamma from denim</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>      dI1 <span class="ot">=</span> beta<span class="sc">*</span>S<span class="sc">*</span>I<span class="sc">/</span>N <span class="sc">-</span> rate<span class="sc">*</span>I1</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>      dI2 <span class="ot">=</span> rate<span class="sc">*</span>I1 <span class="sc">-</span> rate<span class="sc">*</span>I2</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>      dI <span class="ot">=</span>  dI1 <span class="sc">+</span> dI2</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>      dR <span class="ot">=</span> rate<span class="sc">*</span>I2</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>      <span class="fu">list</span>(<span class="fu">c</span>(dS, dI, dI1, dI2, dR))</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  })</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>}</span></code></pre></div>
 </details>
 <p>With the transitions identified, user can then define the model in
 <code>denim</code>.</p>
@@ -423,13 +420,13 @@ describe the transition</p></li>
 </ul>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># --- Transition def for denim</span></span>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>transitions <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="st">&quot;S -&gt; I&quot;</span> <span class="ot">=</span> <span class="st">&quot;beta * S * I/N * timestepDur&quot;</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="st">&quot;I -&gt; R&quot;</span> <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="dv">3</span>, <span class="dv">2</span>) <span class="co"># shape is 2 from number of I sub compartments</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="st">&quot;S -&gt; I&quot;</span> <span class="ot">=</span> <span class="st">&quot;beta * S * I/N * timeStep&quot;</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="st">&quot;I -&gt; R&quot;</span> <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="at">shape =</span> <span class="dv">2</span>) <span class="co"># shape is 2 from number of I sub compartments</span></span>
 <span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>)</span></code></pre></div>
 <p>Note that when converting an ODE to a math expression, we must
 multiply the original expression with time step duration (variable
-<code>timestepDur</code> in the model definition code). This is because
-we are essentially using Euler’s method to estimate the solution for the
+<code>timeStep</code> in the model definition code). This is because we
+are essentially using Euler’s method to estimate the solution for the
 ODE.</p>
 </div>
 <div id="model-configurations" class="section level3">
@@ -443,19 +440,30 @@ in the form of named vectors.</p>
 compartments as these sub-compartments will be automatically computed
 internally), it is recommended to remove redundant compartments (in this
 example, <code>I1</code> and <code>I2</code>).</p>
-<p>For parameters, since <code>rate</code> and <code>scale</code> are
-already defined in the distribution functions, users only need to keep
-<code>beta</code> and <code>N</code> from the initial parameters vector.
-We also need to specify the value for <code>timestepDur</code> here.</p>
+<p>For parameters, since <code>rate</code> is already defined in the
+distribution functions, users only need to keep <code>beta</code> and
+<code>N</code> from the initial parameters vector. We do not need to
+specify the value for <code>timeStep</code> variable as this is a
+special variable in denim and will be defined later on.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># remove I1, I2 compartments</span></span>
 <span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>denim_initialValues <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">S =</span> <span class="dv">999</span>, <span class="at">I =</span> <span class="dv">1</span>, <span class="at">R=</span><span class="dv">0</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>denim_parameters <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">beta =</span> <span class="fl">0.3</span>, <span class="at">N =</span> <span class="dv">1000</span>, <span class="at">timestepDur=</span><span class="fl">0.01</span>) </span></code></pre></div>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>denim_parameters <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">beta =</span> <span class="fl">0.3</span>, <span class="at">N =</span> <span class="dv">1000</span>) </span></code></pre></div>
 <p><strong><em>Initialization of sub-compartments</em>:</strong> when
 there are multiple sub-compartments (e.g., compartment <code>I</code>
 consist of <code>I1</code> and <code>I2</code> sub-compartments), the
 initial population is always assigned to the first sub-compartment. In
 our example, since <code>I = 1</code>, denim will assign
 <code>I1 = 1</code> and <code>I2 = 0</code>.</p>
+<p>There is also an option to distribute initial value across
+sub-compartments based on the specified distribution. To do this, simply
+set <code>dist_init</code> parameter of distribution function to
+<code>TRUE</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>transitions <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="st">&quot;S -&gt; I&quot;</span> <span class="ot">=</span> <span class="st">&quot;beta * S * I/N * timeStep&quot;</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="st">&quot;I -&gt; R&quot;</span> <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="at">shape =</span> <span class="dv">2</span>, <span class="at">dist_init =</span> <span class="cn">TRUE</span>) </span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>)</span></code></pre></div>
+<p>However, for comparison purposes, we will keep this option
+<code>FALSE</code> for the remaining of this demonstration.</p>
 </div>
 <div id="simulation" class="section level3">
 <h3>Simulation</h3>
@@ -466,11 +474,23 @@ duration</u> and <u>time step.</u></p>
 <p>Since <code>denim</code> is a discrete time model, time step must be
 set to a small value for the result to closely follow that of
 <code>deSolve</code> (in this example, 0.01).</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">sim</span>(<span class="at">transitions =</span> transitions,</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>             <span class="at">initialValues =</span> denim_initialValues, </span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>             <span class="at">parameters =</span> denim_parameters,</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>             <span class="at">simulationDuration =</span> <span class="dv">100</span>,</span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>             <span class="at">timeStep =</span> <span class="fl">0.01</span>)</span></code></pre></div>
+<p>Note that the value for parameter <code>timeStep</code> is also the
+value for variable <code>timeStep</code> in the mathematical
+equation.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">sim</span>(<span class="at">transitions =</span> transitions,</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>             <span class="at">initialValues =</span> denim_initialValues, </span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>             <span class="at">parameters =</span> denim_parameters,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>             <span class="at">simulationDuration =</span> <span class="dv">100</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>             <span class="at">timeStep =</span> <span class="fl">0.01</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="fu">head</span>(mod[mod<span class="sc">$</span>Time <span class="sc">%%</span> <span class="dv">1</span> <span class="sc">==</span> <span class="dv">0</span>, ])</span></code></pre></div>
+<pre><code>##     Time        S        I          R
+## 1      0 999.0000 1.000000 0.00000000
+## 101    1 998.6566 1.293759 0.04961535
+## 201    2 998.2251 1.593725 0.18121212
+## 301    3 997.7004 1.920189 0.37940195
+## 401    4 997.0725 2.289061 0.63848007
+## 501    5 996.3266 2.714365 0.95900520</code></pre>
 </div>
 </div>
 <div id="compare-output" class="section level2">
