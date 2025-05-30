@@ -410,19 +410,20 @@ in their <code>deSolve</code> model.</p>
 </details>
 <p>With the transitions identified, user can then define the model in
 <code>denim</code>.</p>
-<p>When using <code>denim</code>, the model structure is given as a
-<code>list</code> of <em>key</em>-<em>value</em> pairs where</p>
+<p>When using <code>denim</code> DSL, the model structure is given as a
+set of <em>key</em>-<em>value</em> pairs where</p>
 <ul>
 <li><p><em>key</em> is a string showing the transition direction between
 compartments</p></li>
 <li><p><em>value</em> is the built-in distribution function that
 describe the transition</p></li>
 </ul>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># --- Transition def for denim</span></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>transitions <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="st">&quot;S -&gt; I&quot;</span> <span class="ot">=</span> <span class="st">&quot;beta * S * I/N * timeStep&quot;</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="st">&quot;I -&gt; R&quot;</span> <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="at">shape =</span> <span class="dv">2</span>) <span class="co"># shape is 2 from number of I sub compartments</span></span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># --- Model definition in denim</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>transitions <span class="ot">&lt;-</span> <span class="fu">denim_dsl</span>({</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  S <span class="ot">-&gt;</span> I <span class="ot">=</span> beta <span class="sc">*</span> S <span class="sc">*</span> I<span class="sc">/</span>N <span class="sc">*</span> timeStep</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="co"># shape is 2 from number of I sub compartments</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  I <span class="ot">-&gt;</span> R <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="at">shape =</span> <span class="dv">2</span>) </span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>})</span></code></pre></div>
 <p>Note that when converting an ODE to a math expression, we must
 multiply the original expression with time step duration (variable
 <code>timeStep</code> in the model definition code). This is because we
@@ -458,10 +459,10 @@ our example, since <code>I = 1</code>, denim will assign
 sub-compartments based on the specified distribution. To do this, simply
 set <code>dist_init</code> parameter of distribution function to
 <code>TRUE</code>.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>transitions <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="st">&quot;S -&gt; I&quot;</span> <span class="ot">=</span> <span class="st">&quot;beta * S * I/N * timeStep&quot;</span>,</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="st">&quot;I -&gt; R&quot;</span> <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="at">shape =</span> <span class="dv">2</span>, <span class="at">dist_init =</span> <span class="cn">TRUE</span>) </span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>transitions <span class="ot">&lt;-</span> <span class="fu">denim_dsl</span>({</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  S <span class="ot">-&gt;</span> I <span class="ot">=</span> beta <span class="sc">*</span> S <span class="sc">*</span> I<span class="sc">/</span>N <span class="sc">*</span> timeStep</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  I <span class="ot">-&gt;</span> R <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="at">shape =</span> <span class="dv">2</span>, <span class="at">dist_init =</span> <span class="cn">TRUE</span>) </span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>})</span></code></pre></div>
 <p>However, for comparison purposes, we will keep this option
 <code>FALSE</code> for the remaining of this demonstration.</p>
 </div>

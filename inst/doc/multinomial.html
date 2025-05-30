@@ -363,17 +363,17 @@ modeling.</p>
 <p>To specify the proportion that goes to each outgoing compartment,
 define the transition using the following syntax in model
 definition:</p>
-<p><code>&quot;proportion * compartment -&gt;  out_compartment&quot; = [transition]</code></p>
+<p><code>proportion * compartment -&gt;  out_compartment = [transition]</code></p>
 <p>Note that the <code>proportion</code> here is the proportion of
 <code>compartment</code> that will end up in
 <code>out_compartment</code> <u>at equilibrium</u>.</p>
 <p><strong><em>Example:</em></strong> An SIRD model where 90% of
 infected can recover while the remaining 10% will die.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>transitions <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="st">&quot;S -&gt; I&quot;</span> <span class="ot">=</span> <span class="st">&quot;beta * S * (I / N) * timeStep&quot;</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="st">&quot;0.9 * I -&gt; R&quot;</span> <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="dv">2</span>),</span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="st">&quot;0.1 * I -&gt; D&quot;</span> <span class="ot">=</span> <span class="fu">d_exponential</span>(<span class="fl">0.1</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>transitions <span class="ot">&lt;-</span> <span class="fu">denim_dsl</span>({</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  S <span class="ot">-&gt;</span> I <span class="ot">=</span> beta <span class="sc">*</span> S <span class="sc">*</span> (I <span class="sc">/</span> N) <span class="sc">*</span> timeStep</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fl">0.9</span> <span class="sc">*</span> I <span class="ot">-&gt;</span> R <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="dv">2</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="fl">0.1</span> <span class="sc">*</span> I <span class="ot">-&gt;</span> D <span class="ot">=</span> <span class="fu">d_exponential</span>(<span class="fl">0.1</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>})</span></code></pre></div>
 <details>
   <summary>
     Mathematical formulation for the model
@@ -395,11 +395,11 @@ dD = 0.1*ID
 they don’t sum up to 1.</p>
 <p><strong><em>Example 2:</em></strong> The following model definition
 is equivalent to the one in <strong><em>Example 1</em></strong></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>transitions <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="st">&quot;S -&gt; I&quot;</span> <span class="ot">=</span> <span class="st">&quot;beta * S * (I / N) * timeStep&quot;</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="st">&quot;36 * I -&gt; R&quot;</span> <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="dv">2</span>),</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="st">&quot;4 * I -&gt; D&quot;</span> <span class="ot">=</span> <span class="fu">d_exponential</span>(<span class="fl">0.1</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>transitions <span class="ot">&lt;-</span> <span class="fu">denim_dsl</span>({</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  S <span class="ot">-&gt;</span> I <span class="ot">=</span> beta <span class="sc">*</span> S <span class="sc">*</span> (I <span class="sc">/</span> N) <span class="sc">*</span> timeStep</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="dv">36</span> <span class="sc">*</span> I <span class="ot">-&gt;</span> R <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="dv">2</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="dv">4</span> <span class="sc">*</span> I <span class="ot">-&gt;</span> D <span class="ot">=</span> <span class="fu">d_exponential</span>(<span class="fl">0.1</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>})</span></code></pre></div>
 </div>
 </div>
 <div id="example-model" class="section level3">
@@ -410,11 +410,11 @@ is equivalent to the one in <strong><em>Example 1</em></strong></p>
 <div id="model-definition-in-denim" class="section level4">
 <h4>Model definition in denim</h4>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># model in denim</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>transitions <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="st">&quot;S -&gt; I&quot;</span> <span class="ot">=</span> <span class="st">&quot;beta * S * (I / N) * timeStep&quot;</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="st">&quot;0.9 * I -&gt; R&quot;</span> <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="dv">2</span>),</span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="st">&quot;0.1 * I -&gt; D&quot;</span> <span class="ot">=</span> <span class="fu">d_exponential</span>(<span class="fl">0.1</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>transitions <span class="ot">&lt;-</span> <span class="fu">denim_dsl</span>({</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  S <span class="ot">-&gt;</span> I <span class="ot">=</span> beta <span class="sc">*</span> S <span class="sc">*</span> (I <span class="sc">/</span> N) <span class="sc">*</span> timeStep</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="fl">0.9</span> <span class="sc">*</span> I <span class="ot">-&gt;</span> R <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="dv">2</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="fl">0.1</span> <span class="sc">*</span> I <span class="ot">-&gt;</span> D <span class="ot">=</span> <span class="fu">d_exponential</span>(<span class="fl">0.1</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>})</span>
 <span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a></span>
 <span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>denimInitialValues <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
 <span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>  <span class="at">S =</span> <span class="dv">999</span>, </span>
@@ -502,11 +502,11 @@ transitions as competing risks.</p>
 <p><strong><em>Example:</em></strong> the following model definition
 will treat <code>I-&gt;R</code> and <code>I-&gt;D</code> as competing
 risks.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>transitions <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="st">&quot;S -&gt; I&quot;</span> <span class="ot">=</span> <span class="st">&quot;beta * S * (I / N) * timeStep&quot;</span>,</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="st">&quot;I -&gt; R&quot;</span> <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="at">shape =</span> <span class="dv">2</span>),</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="st">&quot;I -&gt; D&quot;</span> <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">4</span>, <span class="at">shape =</span> <span class="dv">2</span>)</span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>transitions <span class="ot">&lt;-</span> <span class="fu">denim_dsl</span>({</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  S <span class="ot">-&gt;</span> I <span class="ot">=</span> beta <span class="sc">*</span> S <span class="sc">*</span> (I <span class="sc">/</span> N) <span class="sc">*</span> timeStep</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  I <span class="ot">-&gt;</span> R <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="at">shape =</span> <span class="dv">2</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  I <span class="ot">-&gt;</span> D <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">4</span>, <span class="at">shape =</span> <span class="dv">2</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>})</span></code></pre></div>
 </div>
 <div id="example-model-1" class="section level3">
 <h3>3.2. Example model</h3>
@@ -515,17 +515,18 @@ risks.</p>
 <code>deSolve</code> and compare the output of 2 implementations.</p>
 <div id="model-definition-in-denim-1" class="section level4">
 <h4>Model definition in denim</h4>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>transitions <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="st">&quot;S -&gt; I&quot;</span> <span class="ot">=</span> <span class="st">&quot;beta * S * (I / N) * timeStep&quot;</span>,</span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="st">&quot;I -&gt; R&quot;</span> <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="at">shape =</span> <span class="dv">2</span>),</span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="st">&quot;I -&gt; D&quot;</span> <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">4</span>, <span class="at">shape =</span> <span class="dv">2</span>)</span>
-<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>)</span>
-<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>denimInitialValues <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  <span class="at">S =</span> <span class="dv">950</span>, </span>
-<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>  <span class="at">I =</span> <span class="dv">50</span>, </span>
-<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>  <span class="at">R =</span> <span class="dv">0</span>, </span>
-<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>  <span class="at">D =</span> <span class="dv">0</span></span>
-<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>transitions <span class="ot">&lt;-</span> <span class="fu">denim_dsl</span>({</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  S <span class="ot">-&gt;</span> I <span class="ot">=</span> beta <span class="sc">*</span> S <span class="sc">*</span> (I <span class="sc">/</span> N) <span class="sc">*</span> timeStep</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  I <span class="ot">-&gt;</span> R <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="at">shape =</span> <span class="dv">2</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  I <span class="ot">-&gt;</span> D <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">4</span>, <span class="at">shape =</span> <span class="dv">2</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>})</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>denimInitialValues <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>  <span class="at">S =</span> <span class="dv">950</span>, </span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>  <span class="at">I =</span> <span class="dv">50</span>, </span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>  <span class="at">R =</span> <span class="dv">0</span>, </span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>  <span class="at">D =</span> <span class="dv">0</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="equivalent-model-definition-in-desolve-1" class="section level4">
 <h4>Equivalent model definition in deSolve</h4>

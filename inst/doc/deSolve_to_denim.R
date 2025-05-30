@@ -47,11 +47,12 @@ head(ode_mod[-1, c("time", "S", "I", "R")])
 # }
 
 ## -----------------------------------------------------------------------------
-# --- Transition def for denim
-transitions <- list(
-  "S -> I" = "beta * S * I/N * timeStep",
-  "I -> R" = d_gamma(rate = 1/3, shape = 2) # shape is 2 from number of I sub compartments
-)
+# --- Model definition in denim
+transitions <- denim_dsl({
+  S -> I = beta * S * I/N * timeStep
+  # shape is 2 from number of I sub compartments
+  I -> R = d_gamma(rate = 1/3, shape = 2) 
+})
 
 ## -----------------------------------------------------------------------------
 # remove I1, I2 compartments
@@ -59,10 +60,10 @@ denim_initialValues <- c(S = 999, I = 1, R=0)
 denim_parameters <- c(beta = 0.3, N = 1000) 
 
 ## ----eval=FALSE---------------------------------------------------------------
-# transitions <- list(
-#   "S -> I" = "beta * S * I/N * timeStep",
-#   "I -> R" = d_gamma(rate = 1/3, shape = 2, dist_init = TRUE)
-# )
+# transitions <- denim_dsl({
+#   S -> I = beta * S * I/N * timeStep
+#   I -> R = d_gamma(rate = 1/3, shape = 2, dist_init = TRUE)
+# })
 
 ## -----------------------------------------------------------------------------
 mod <- sim(transitions = transitions,

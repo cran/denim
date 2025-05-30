@@ -65,9 +65,15 @@ DiagrammeR::grViz("digraph {
 
 ## -----------------------------------------------------------------------------
 transitions <- list(
-  "S -> I" = "beta * S * I / N",
+  "S -> I" = "beta * S * I / N * timeStep",
   "I -> R" = d_gamma(rate = 1/2, 3)
 )
+
+## -----------------------------------------------------------------------------
+transitions <- denim_dsl({
+  S -> I = beta * (I/N) * S * timeStep
+  I -> R = d_gamma(rate = 1/4, shape = 3)
+})
 
 ## -----------------------------------------------------------------------------
 initialValues <- c(
@@ -78,7 +84,7 @@ initialValues <- c(
 
 ## -----------------------------------------------------------------------------
 parameters <- c(
-  beta = 0.012,
+  beta = 1.2,
   N = 1000
 )
 
@@ -123,10 +129,10 @@ DiagrammeR::grViz("digraph {
   }", height = "100%", width = "100%")
 
 ## ----eval=FALSE---------------------------------------------------------------
-# transitions <- list(
-#   "S -> I" = "beta * S * I / N",
-#   "I -> R" = d_gamma(rate = 1/2, 3, dist_init=TRUE)
-# )
+# transitions <- denim_dsl({
+#   S -> I = beta * S * I / N * timeStep
+#   I -> R = d_gamma(rate = 1/2, 3, dist_init=TRUE)
+# })
 
 ## ----echo=FALSE---------------------------------------------------------------
 DiagrammeR::grViz("digraph {
@@ -142,12 +148,12 @@ DiagrammeR::grViz("digraph {
   width = 500, height = "100%")
 
 ## ----fig.width = 5------------------------------------------------------------
-transitions <- list(
-  "S -> I" = "beta * S * I / N",
-  "S -> V" = 5,
-  "0.9 * I -> R" = d_gamma(1/3, 2),
-  "0.1 * I -> D" = d_lognormal(2, 0.5)
-)
+transitions <- denim_dsl({
+  S -> I = beta * S * I / N 
+  S -> V = 5
+  0.9 * I -> R = d_gamma(1/3, 2)
+  0.1 * I -> D = d_lognormal(2, 0.5)
+})
 
 initialValues <- c(
   S = 999, 
@@ -172,7 +178,7 @@ mod <- sim(transitions = transitions,
            timeStep = timeStep)
 
 head(mod)
-plot(mod)
+plot(mod, ylim = c(0, 1000))
 
 ## ----echo=FALSE---------------------------------------------------------------
 DiagrammeR::grViz("digraph {
@@ -190,14 +196,14 @@ DiagrammeR::grViz("digraph {
   width = 700, height = "100%")
 
 ## ----fig.width = 5------------------------------------------------------------
-transitions <- list(
-  "S -> I" = "beta * S * (I + IV) / N",
-  "S -> V" = 2,
-  "0.1 * I -> D" = d_lognormal(2, 0.5),
-  "0.9 * I -> R" = d_gamma(rate = 1/3, shape = 2),
-  "V -> IV" = "0.1 * beta * V * (I + IV) / N",
-  "IV -> R" = d_exponential(2)
-)
+transitions <- denim_dsl({
+  S -> I = beta * S * (I + IV) / N 
+  S -> V = 2
+  0.1 * I -> D = d_lognormal(mu = d_mu, sigma = d_sigma)
+  0.9 * I -> R = d_gamma(rate = r_rate, shape = r_shape)
+  V -> IV = 0.1 * beta * V * (I + IV) / N
+  IV -> R = d_exponential(iv_r_rate)
+})
 
 initialValues <- c(
   S = 999, 
@@ -210,7 +216,12 @@ initialValues <- c(
 
 parameters <- c(
   beta = 0.12,
-  N = 1000
+  N = 1000,
+  d_mu = 2,
+  d_sigma = 1/2,
+  r_rate = 1/3,
+  r_shape = 2,
+  iv_r_rate = 2
 )
 
 simulationDuration <- 10

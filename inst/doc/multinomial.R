@@ -3,26 +3,26 @@ library(deSolve)
 library(denim)
 
 ## -----------------------------------------------------------------------------
-transitions <- list(
-  "S -> I" = "beta * S * (I / N) * timeStep",
-  "0.9 * I -> R" = d_gamma(1/3, 2),
-  "0.1 * I -> D" = d_exponential(0.1)
-)
+transitions <- denim_dsl({
+  S -> I = beta * S * (I / N) * timeStep
+  0.9 * I -> R = d_gamma(1/3, 2)
+  0.1 * I -> D = d_exponential(0.1)
+})
 
 ## -----------------------------------------------------------------------------
-transitions <- list(
-  "S -> I" = "beta * S * (I / N) * timeStep",
-  "36 * I -> R" = d_gamma(1/3, 2),
-  "4 * I -> D" = d_exponential(0.1)
-)
+transitions <- denim_dsl({
+  S -> I = beta * S * (I / N) * timeStep
+  36 * I -> R = d_gamma(1/3, 2)
+  4 * I -> D = d_exponential(0.1)
+})
 
 ## -----------------------------------------------------------------------------
 # model in denim
-transitions <- list(
-  "S -> I" = "beta * S * (I / N) * timeStep",
-  "0.9 * I -> R" = d_gamma(1/3, 2),
-  "0.1 * I -> D" = d_exponential(0.1)
-)
+transitions <- denim_dsl({
+  S -> I = beta * S * (I / N) * timeStep
+  0.9 * I -> R = d_gamma(1/3, 2)
+  0.1 * I -> D = d_exponential(0.1)
+})
 
 denimInitialValues <- c(
   S = 999, 
@@ -112,18 +112,19 @@ lines(ode_mod$time, ode_mod$D, lwd=3, lty=3)
 legend(x = 150, y = 25,legend=c("denim", "deSolve"), col = c("#4876ff", "black"), lty=c(1,3))
 
 ## -----------------------------------------------------------------------------
-transitions <- list(
-  "S -> I" = "beta * S * (I / N) * timeStep",
-  "I -> R" = d_gamma(rate = 1/3, shape = 2),
-  "I -> D" = d_gamma(rate = 1/4, shape = 2)
-)
+transitions <- denim_dsl({
+  S -> I = beta * S * (I / N) * timeStep
+  I -> R = d_gamma(rate = 1/3, shape = 2)
+  I -> D = d_gamma(rate = 1/4, shape = 2)
+})
 
 ## -----------------------------------------------------------------------------
-transitions <- list(
-  "S -> I" = "beta * S * (I / N) * timeStep",
-  "I -> R" = d_gamma(rate = 1/3, shape = 2),
-  "I -> D" = d_gamma(rate = 1/4, shape = 2)
-)
+transitions <- denim_dsl({
+  S -> I = beta * S * (I / N) * timeStep
+  I -> R = d_gamma(rate = 1/3, shape = 2)
+  I -> D = d_gamma(rate = 1/4, shape = 2)
+})
+
 denimInitialValues <- c(
   S = 950, 
   I = 50, 
