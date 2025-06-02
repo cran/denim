@@ -100,7 +100,7 @@ mod <- sim(sir_model_list,
 # plot output
 plot(mod, ylim = c(1, 1000))
 
-## -----------------------------------------------------------------------------
+## ----message=FALSE------------------------------------------------------------
 library(tidyverse)
 # configurations for 3 different I->R transitions
 model_config <- tibble(

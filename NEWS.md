@@ -1,3 +1,7 @@
+# denim 1.2.1
+* Minor runtime improvement
+* Add option to select color palette for plot
+
 # denim 1.2.0
 * Add denim DSL support
 * Add error handlers 
