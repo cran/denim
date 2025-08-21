@@ -9,7 +9,7 @@
 #include <vector>
 
 
-class Distribution {
+class Transition {
 protected:
     size_t maxDay {1};
     std::string distName;
@@ -20,6 +20,7 @@ public:
     virtual double getProbDist(size_t index); //get probability distribution, used for distributing initial value
     size_t getMaxDay();
     virtual double getTransitionProb(size_t index) = 0;
+    virtual std::vector<double>& getTransitionProbRef() = 0;
     /**
      * Helper function to calculate probability (x0, x1, x2...) from waiting time distribution (proportion p0, p1, p2
      * ...)
@@ -28,7 +29,7 @@ public:
      * @return
      */
     // double calcTransitionProbHelper(std::vector<double> waitingTime, size_t i);
-    virtual ~Distribution() = 0;
+    virtual ~Transition() = 0;
 };
 
 #endif //MAIN_CPP_DISTRIBUTION_H

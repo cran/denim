@@ -382,12 +382,13 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="model-definition" class="section level3">
 <h3>Model definition</h3>
-<p>Unlike <code>deSolve</code> where transitions between compartments
-are defined by a system of ODEs, transitions in <code>denim</code> must
-be defined by (i) a distribution of dwell-time (either parametric or
-non-parametric) or (ii) a mathematical expression.</p>
-<p>User must first identify the transitions that best describe the ones
-in their <code>deSolve</code> model.</p>
+<p>Similar to <code>deSolve</code>, transitions between compartments in
+<code>denim</code> can be defined using ordinary differential equations
+(ODEs). However, <code>denim</code> extends it by providing the option
+to directly express the dwell time distribution.</p>
+<p>To utilize this option from <code>denim</code>, the user must first
+identify which transitions can best describe the ones in their
+<code>deSolve</code> model.</p>
 <details>
   <summary>Identify distribution</summary>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># --- Model definition in deSolve</span></span>
@@ -408,42 +409,38 @@ in their <code>deSolve</code> model.</p>
 <span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  })</span>
 <span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>}</span></code></pre></div>
 </details>
-<p>With the transitions identified, user can then define the model in
-<code>denim</code>.</p>
+<p>With the transitions identified, the user can then define the model
+in <code>denim</code>.</p>
 <p>When using <code>denim</code> DSL, the model structure is given as a
 set of <em>key</em>-<em>value</em> pairs where</p>
 <ul>
-<li><p><em>key</em> is a string showing the transition direction between
-compartments</p></li>
-<li><p><em>value</em> is the built-in distribution function that
-describe the transition</p></li>
+<li><p><em>key</em> shows the transition direction between compartments
+in the format of
+<code>compartment -&gt; out_compartment</code>.</p></li>
+<li><p><em>value</em> is either a built-in distribution function that
+describe the transition or a mathematical expression.</p></li>
 </ul>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># --- Model definition in denim</span></span>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>transitions <span class="ot">&lt;-</span> <span class="fu">denim_dsl</span>({</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  S <span class="ot">-&gt;</span> I <span class="ot">=</span> beta <span class="sc">*</span> S <span class="sc">*</span> I<span class="sc">/</span>N <span class="sc">*</span> timeStep</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  S <span class="ot">-&gt;</span> I <span class="ot">=</span> beta <span class="sc">*</span> S <span class="sc">*</span> I<span class="sc">/</span>N</span>
 <span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="co"># shape is 2 from number of I sub compartments</span></span>
 <span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  I <span class="ot">-&gt;</span> R <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="at">shape =</span> <span class="dv">2</span>) </span>
 <span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>})</span></code></pre></div>
-<p>Note that when converting an ODE to a math expression, we must
-multiply the original expression with time step duration (variable
-<code>timeStep</code> in the model definition code). This is because we
-are essentially using Euler’s method to estimate the solution for the
-ODE.</p>
 </div>
 <div id="model-configurations" class="section level3">
 <h3>Model configurations</h3>
-<p>Similar to <code>deSolve</code>, <code>denim</code> also ask users to
-provide the <u>initial values</u> and any <u>additional parameters</u>
-in the form of named vectors.</p>
-<p>For the example <code>deSolve</code> code, while users can use the
-<code>initalValues</code> from the <code>deSolve</code> code as is
+<p>Similar to <code>deSolve</code>, <code>denim</code> also ask the
+users to provide the <u>initial values</u> and any <u>additional
+parameters</u> in the form of named vectors or named list.</p>
+<p>For the example <code>deSolve</code> code, while the users can use
+the <code>initalValues</code> from the <code>deSolve</code> code as is
 (<code>denim</code> will ignore unused <code>I1</code>, <code>I2</code>
 compartments as these sub-compartments will be automatically computed
 internally), it is recommended to remove redundant compartments (in this
 example, <code>I1</code> and <code>I2</code>).</p>
 <p>For parameters, since <code>rate</code> is already defined in the
-distribution functions, users only need to keep <code>beta</code> and
-<code>N</code> from the initial parameters vector. We do not need to
+distribution functions, the users only need to keep <code>beta</code>
+and <code>N</code> from the initial parameters vector. We do not need to
 specify the value for <code>timeStep</code> variable as this is a
 special variable in denim and will be defined later on.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># remove I1, I2 compartments</span></span>
@@ -460,7 +457,7 @@ sub-compartments based on the specified distribution. To do this, simply
 set <code>dist_init</code> parameter of distribution function to
 <code>TRUE</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>transitions <span class="ot">&lt;-</span> <span class="fu">denim_dsl</span>({</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  S <span class="ot">-&gt;</span> I <span class="ot">=</span> beta <span class="sc">*</span> S <span class="sc">*</span> I<span class="sc">/</span>N <span class="sc">*</span> timeStep</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  S <span class="ot">-&gt;</span> I <span class="ot">=</span> beta <span class="sc">*</span> S <span class="sc">*</span> I<span class="sc">/</span>N </span>
 <span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  I <span class="ot">-&gt;</span> R <span class="ot">=</span> <span class="fu">d_gamma</span>(<span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="at">shape =</span> <span class="dv">2</span>, <span class="at">dist_init =</span> <span class="cn">TRUE</span>) </span>
 <span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>})</span></code></pre></div>
 <p>However, for comparison purposes, we will keep this option
@@ -468,16 +465,13 @@ set <code>dist_init</code> parameter of distribution function to
 </div>
 <div id="simulation" class="section level3">
 <h3>Simulation</h3>
-<p>Lastly, users need to define the simulation duration and time step
-for <code>denim</code> to run. Unlike <code>deSolve</code> which takes a
-time sequence, <code>denim</code> only require the <u>simulation
+<p>Lastly, the users need to define the simulation duration and time
+step for <code>denim</code> to run. Unlike <code>deSolve</code> which
+takes a time sequence, <code>denim</code> only require the <u>simulation
 duration</u> and <u>time step.</u></p>
-<p>Since <code>denim</code> is a discrete time model, time step must be
-set to a small value for the result to closely follow that of
+<p>Since <code>denim</code> uses a discrete time approach, time step
+must be set to a small value for the result to closely follow that of
 <code>deSolve</code> (in this example, 0.01).</p>
-<p>Note that the value for parameter <code>timeStep</code> is also the
-value for variable <code>timeStep</code> in the mathematical
-equation.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">sim</span>(<span class="at">transitions =</span> transitions,</span>
 <span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>             <span class="at">initialValues =</span> denim_initialValues, </span>
 <span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>             <span class="at">parameters =</span> denim_parameters,</span>

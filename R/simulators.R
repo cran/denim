@@ -33,7 +33,7 @@
 #' 
 #' Simulation function that call the C++ simulator
 #'
-#' @param transitions a list of transitions follows this format `"transition" = distribution()`
+#' @param transitions output of function `denim_dsl()` or a list of transitions follows this format `"transition" = expression`
 #' @param initialValues a vector contains the initial values of all compartments defined 
 #' in the **transitions**, follows this format `compartment_name = initial_value`
 #' @param parameters a vector contains values of any parameters that are not compartments, 
@@ -49,6 +49,13 @@
 #' @export
 #'
 #' @examples 
+#' # model can be defined using denim DSL
+#' transitions <- denim_dsl({
+#'    S -> I = beta * S * I / N
+#'    I -> R = d_gamma(1/3, 2)
+#' })
+#' 
+#' # or as a list
 #' transitions <- list(
 #'    "S -> I" = "beta * S * I / N",
 #'    "I -> R" = d_gamma(1/3, 2)
@@ -114,7 +121,7 @@ plot.denim <- function(x, ..., color_palette=NULL) {
 
   # Plot the first compartment
   cmd1 <- paste0("with(x, {
-  plot(Time, ", comp_names[1], ", type = \"l\", lwd = 3, col = \"", col_codes[1], 
+  plot(Time, ", comp_names[1], ", type = \"l\", lwd = 2, col = \"", col_codes[1], 
   "\", xlab = \"Time\", ylab = \"Number of people\", ... )\n")
   
   # Add lines of the other compartments

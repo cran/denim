@@ -9,7 +9,7 @@ denim_dsl(x)
 \arguments{
 \item{x}{\itemize{
 \item an expression written in denim's DSL syntax. Each line should be a transition written in the
-format \code{compartment -> out_compartment = expression} where expression can be either a math expression
+format \code{from -> to = transition} where expression can be either a math expression
 or one of denim's built-in dwell time distribution function
 }}
 }
@@ -21,7 +21,7 @@ This function parses model transitions defined in denim's DSL syntax
 }
 \examples{
 transitions <- denim_dsl({
-  S -> I = beta * (I/N) * S * timeStep
+  S -> I = beta * (I/N) * S 
   I -> R = d_gamma(rate = 1/4, shape = 3)
 })
 }

@@ -8,17 +8,6 @@ library(DiagrammeR) # for flowchart diagram
 library(denim)
 
 ## ----echo=FALSE---------------------------------------------------------------
-DiagrammeR::grViz("digraph {
-  graph [layout = dot, rankdir = LR]
-  
-  node [shape = rectangle]
-  
-  S -> I [label = '&#946;SI/N']
-  I -> R [label = '&#947;I']
-  }",
-  width = 300, height = "100%")
-
-## ----echo=FALSE---------------------------------------------------------------
 rates <- c(0.5, 1, 1.5)
 x <- seq(0, 5, 0.001)
 y <- dexp(x = x, rate = rates[1])
@@ -41,38 +30,16 @@ y <- dgamma(x = x, shape = 3, rate = 1/2)
 plot(x, y, type = "l", col = col_codes[1], lty = 1, lwd = 3,
      xlab = "Length of stay (days)", ylab = "", yaxt = 'n')
 
-## ----echo=FALSE---------------------------------------------------------------
-DiagrammeR::grViz("digraph {
-  graph [layout = dot, rankdir = LR]
-  
-  node [shape = rectangle]
-  
-  S -> I [label = '&#946;SI/N']
-  I -> R [label = 'd_gamma(1/2, 3)']
-  }",
-  width = 400, height = "100%")
-
-## ----echo=FALSE---------------------------------------------------------------
-DiagrammeR::grViz("digraph {
-  graph [layout = dot, rankdir = LR]
-  
-  node [shape = rectangle]
-  
-  S -> I [label = '&#946;SI/N']
-  I -> R [label = 'd_gamma(1/2, 3)']
-  }",
-  width = 400, height = "100%")
-
 ## -----------------------------------------------------------------------------
 transitions <- list(
-  "S -> I" = "beta * S * I / N * timeStep",
+  "S -> I" = "beta * S * I / N",
   "I -> R" = d_gamma(rate = 1/2, 3)
 )
 
 ## -----------------------------------------------------------------------------
 transitions <- denim_dsl({
-  S -> I = beta * (I/N) * S * timeStep
-  I -> R = d_gamma(rate = 1/4, shape = 3)
+  S -> I = beta * (I/N) * S
+  I -> R = d_gamma(rate = 1/2, shape = 3)
 })
 
 ## -----------------------------------------------------------------------------
@@ -102,50 +69,26 @@ head(mod)
 plot(mod)
 
 ## ----echo=FALSE---------------------------------------------------------------
-DiagrammeR::grViz("digraph {
-  graph [layout = dot, rankdir = LR]
-  
-  node [shape = rectangle]
-  
-  S -> I [label = '&#946;SI/N']
-  I -> R [label = '&#947;I']
-  }",
-  width = 300, height = "100%")
-
-## ----echo=FALSE---------------------------------------------------------------
-DiagrammeR::grViz("digraph {
-  graph [layout = dot, rankdir = LR]
-  
-  node [shape = rectangle]
-  
-  S -> I1 [label = '&#946;S(I@_{1} + I@_{2} + I@_{3} + I@_{4})/N']
-  I1 -> R1 [label = '&#947;@_{1}I@_{1}']
-  I2 -> R2 [label = '&#947;@_{2}I@_{2}']
-  I3 -> R3 [label = '&#947;@_{3}I@_{3}']
-  I4 -> R4 [label = 'I@_{4}']
-  I1 -> I2 [label = '(1-&#947;@_{1})I@_{1}']
-  I2 -> I3 [label = '(1-&#947;@_{2})I@_{2}']
-  I3 -> I4 [label = '(1-&#947;@_{3})I@_{3}']
-  }", height = "100%", width = "100%")
+# DiagrammeR::grViz("digraph {
+#   graph [layout = dot, rankdir = LR]
+#   
+#   node [shape = rectangle]
+#   
+#   S -> I1 [label = '&#946;S(I@_{1} + I@_{2} + I@_{3} + I@_{4})/N']
+#   I1 -> R1 [label = '&#947;@_{1}I@_{1}']
+#   I2 -> R2 [label = '&#947;@_{2}I@_{2}']
+#   I3 -> R3 [label = '&#947;@_{3}I@_{3}']
+#   I4 -> R4 [label = 'I@_{4}']
+#   I1 -> I2 [label = '(1-&#947;@_{1})I@_{1}']
+#   I2 -> I3 [label = '(1-&#947;@_{2})I@_{2}']
+#   I3 -> I4 [label = '(1-&#947;@_{3})I@_{3}']
+#   }", height = "100%", width = "100%")
 
 ## ----eval=FALSE---------------------------------------------------------------
 # transitions <- denim_dsl({
-#   S -> I = beta * S * I / N * timeStep
+#   S -> I = beta * S * I / N
 #   I -> R = d_gamma(rate = 1/2, 3, dist_init=TRUE)
 # })
-
-## ----echo=FALSE---------------------------------------------------------------
-DiagrammeR::grViz("digraph {
-  graph [layout = dot, rankdir = LR]
-  
-  node [shape = rectangle]
-  
-  S -> I [label = '&#946;SI/N']
-  S -> V [label = '5']
-  I -> R [label = '0.9 -> d_gamma(1/3, 2)']
-  I -> D [label = '0.1 -> d_lognormal(2, 0.5)']
-  }",
-  width = 500, height = "100%")
 
 ## ----fig.width = 5------------------------------------------------------------
 transitions <- denim_dsl({
@@ -164,11 +107,11 @@ initialValues <- c(
 )
 
 parameters <- c(
-  beta = 0.12,
+  beta = 1.2,
   N = 1000
 )
 
-simulationDuration <- 10
+simulationDuration <- 20
 timeStep <- 0.01
 
 mod <- sim(transitions = transitions, 
@@ -180,58 +123,112 @@ mod <- sim(transitions = transitions,
 head(mod)
 plot(mod, ylim = c(0, 1000))
 
-## ----echo=FALSE---------------------------------------------------------------
-DiagrammeR::grViz("digraph {
-  graph [layout = dot, rankdir = LR]
-  
-  node [shape = rectangle]
-  
-  S -> I [label = '&#946;S(I + IV)/N']
-  S -> V [label = '2']
-  I -> D [label = '0.1 -> d_lognormal(2, 0.5)']
-  I -> R [label = '0.9 -> d_gamma(1/3, 2)']
-  V -> IV [label = '0.1 * &#946;V(I + IV)/N']
-  IV -> R [label = 'd_exponential(2)']
-  }",
-  width = 700, height = "100%")
-
 ## ----fig.width = 5------------------------------------------------------------
+initialValues <- c(S = 999, I = 1, R = 0, V = 0, IV = 0, D = 0) 
+ 
+modelStructure <- denim_dsl({ 
+    S -> I = beta * S * (I + IV) / N 
+    S -> V = d_exponential(0.01) 
+    0.1 * I -> D = d_lognormal(2, 0.5) 
+    0.9 * I -> R = d_gamma(1/3, 2) 
+    V -> IV = 0.2 * beta * V * (I + IV) / N 
+    IV -> R = nonparametric(iv_r_dist) 
+    IV -> D = d_weibull(scale = 2, shape = 1.5) 
+}) 
+
+parameters <- list( 
+  beta = 0.9,  
+  N = 1000,
+  iv_r_dist = c(0, 0.15, 0.15,  0.05, 0.2, 0.2, 0.25)
+)
+
+
+simulation <- sim(transitions = modelStructure,  
+           initialValues = initialValues,  
+           parameters = parameters,  
+           simulationDuration = 30,  
+           timeStep = 0.5) 
+
+plot(simulation)
+head(simulation)
+
+## ----echo=FALSE---------------------------------------------------------------
+# ------ Code to generate the distribution to demonstrate nonparametric --------- 
+# Helper function
+compute_dist <- function(dist_func,..., timestep=0.05, error_tolerance=0.0001){
+  maxtime <- timestep
+  prev_prob <- 0
+  prob_dist <- numeric()
+  
+  while(TRUE){
+     # get current cumulative prob and check whether it is sufficiently close to 1
+     temp_prob <-  ifelse(
+       dist_func(maxtime, ...) < (1 - error_tolerance), 
+       dist_func(maxtime, ...), 
+       1);
+
+     # get f(t)
+     curr_prob <- temp_prob - prev_prob
+     prob_dist <- c(prob_dist, curr_prob)
+     
+     prev_prob <- temp_prob
+     maxtime <- maxtime + timestep
+     
+     if(temp_prob == 1){
+       break
+     }
+  }
+  
+  prob_dist
+}
+
+timestep <- 0.05
+# create a multimodal 
+first_dist <- compute_dist(pweibull, 
+                   scale = 5, shape = 5,
+                   timestep = timestep)
+second_dist <- compute_dist(pweibull, 
+                   scale = 2.5, shape = 4,
+                   timestep = timestep)
+second_dist <- c(second_dist, rep(0, length(first_dist) - length(second_dist)))
+ir_dist <- first_dist + second_dist
+
+## -----------------------------------------------------------------------------
+timestep <- 0.05
+plot(seq(0, by = 0.05, length.out = length(ir_dist)), 
+     ir_dist, 
+     type = "l", col = "#374F77", lty = 1, lwd = 3,
+     xlab = "Length of stay (days)", ylab = "", yaxt = 'n')
+
+## -----------------------------------------------------------------------------
 transitions <- denim_dsl({
-  S -> I = beta * S * (I + IV) / N 
-  S -> V = 2
-  0.1 * I -> D = d_lognormal(mu = d_mu, sigma = d_sigma)
-  0.9 * I -> R = d_gamma(rate = r_rate, shape = r_shape)
-  V -> IV = 0.1 * beta * V * (I + IV) / N
-  IV -> R = d_exponential(iv_r_rate)
+  S -> I = beta*I/N*S
+  I -> R = nonparametric(ir_dist)
+  I -> D = d_exponential(d_rate)
 })
 
+parameters <- list(
+  beta = 0.7,
+  ir_dist = ir_dist,
+  d_rate = 0.1,
+  N = 1000
+)
+
 initialValues <- c(
-  S = 999, 
-  I = 1, 
+  S = 999,
+  I = 1,
   R = 0,
-  V = 0,
-  IV = 0,
   D = 0
 )
 
-parameters <- c(
-  beta = 0.12,
-  N = 1000,
-  d_mu = 2,
-  d_sigma = 1/2,
-  r_rate = 1/3,
-  r_shape = 2,
-  iv_r_rate = 2
-)
-
-simulationDuration <- 10
-timeStep <- 0.01
+simulationDuration <- 30
+timeStep <- 0.05
 
 mod <- sim(transitions = transitions, 
            initialValues = initialValues, 
            parameters = parameters, 
            simulationDuration = simulationDuration, 
            timeStep = timeStep)
-plot(mod)
-mod
+
+plot(mod, ylim = c(0, 1000))
 

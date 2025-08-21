@@ -9,13 +9,13 @@ library(denim)
 
 ## -----------------------------------------------------------------------------
 sir_parametric <- denim_dsl({
-  S -> I = beta * (I/N) * S * timeStep
+  S -> I = beta * (I/N) * S
   I -> R = d_weibull(scale = r_scale, shape = r_shape)
 })
 
 ## -----------------------------------------------------------------------------
 sir_nonparametric <- denim_dsl({
-  S -> I = beta * (I/N) * S * timeStep
+  S -> I = beta * (I/N) * S
   I -> R = nonparametric(dwelltime_dist)
 })
 
